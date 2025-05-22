@@ -57,14 +57,13 @@ public class PlayerControl : MonoBehaviour
     }
 
     // 이동 키를 눌렀을 때 호출
-    // 문제 : 점프 후 착지했을 때 일시적으로 속도를 0으로 만드는데 그때 이동키 입력 중이면 그 입력이 이어지지 않음
     public void OnMove(InputAction.CallbackContext context)
     {
         // 문제 : 점프 중에 이동 키를 꾹 누르고 있어도 점프가 끝나면 이동이 동작하지 않음..
         if (context.performed)
         {
             // 입력한 좌표로부터 이동값 연산
-            inputDir = context.ReadValue<Vector2>();
+            inputDir = context.ReadValue<Vector2>().normalized;
             // 걷기 애니메이션 재생
             _animationControl.Animator.SetBool(_animationControl.state[(int)AnimState.Running], true);
         }
@@ -79,7 +78,7 @@ public class PlayerControl : MonoBehaviour
     void Move()
     {
         // 카메라가 좌표를 기준으로 움직여야 자연스러움
-        Vector3 dir = camera.forward * inputDir.y + camera.right * inputDir.x;
+        Vector3 dir = (camera.forward * inputDir.y + camera.right * inputDir.x);
         dir *= moveSpeed;
         dir.y = _rigidbody.velocity.y;
         
