@@ -40,9 +40,12 @@ public class PlayerControl : MonoBehaviour
         GroundCheck();
         
         if (isOnGround)
-        {   
-            // 땅에서만 점프 가능
-            Jump();
+        {
+            if (isJumpEntered)
+            {
+                // 땅에서만 점프 가능
+                Jump(jumpForce);
+            }
         }
         else
         {
@@ -95,18 +98,15 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
-    void Jump()
+    public void Jump(float _jumpForce)
     {
-        if (isJumpEntered)
-        {
-            // 윗 방향으로 힘을 가하여 점프
-            _rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            // 점프 애니메이션 재생
-            _animationControl.Animator.SetBool(_animationControl.state[(int)AnimState.Jump], true);
-            isJumpEntered = false; 
-        }
+        // 윗 방향으로 힘을 가하여 점프
+        _rigidbody.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
+        // 점프 애니메이션 재생
+        _animationControl.Animator.SetBool(_animationControl.state[(int)AnimState.Jump], true);
+        isJumpEntered = false;
     }
-    
+
     // 이동 키 입력에 따른 캐릭터 회전
     void PlayerRotate()
     {
