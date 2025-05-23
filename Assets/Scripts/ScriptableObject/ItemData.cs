@@ -1,21 +1,21 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 
+// 아이템 타입
 public enum ItemType
 {
     Equip,
     Consume,
-    Resource
 }
 
-// 어떤 것을 채워주는지
+// 소비할 때 어떤 것을 채워주는지
 public enum ConsumableType
 {
     Health,
-    Stamina,
 }
 
-[Serializable]
+[Serializable] // 인스펙터에 출현할 수 있게끔
 public class ItemDataConsumable
 {
     public ConsumableType type;
@@ -26,7 +26,8 @@ public class ItemDataConsumable
 [CreateAssetMenu(fileName = "Item", menuName = "New Item")]
 public class ItemData : ScriptableObject
 {
-    [Header("Info")] public string itemName;
+    [Header("Info")] public int id;
+    public string itemName;
     public string description;
     public ItemType type;
     public Sprite icon;
@@ -37,7 +38,8 @@ public class ItemData : ScriptableObject
     
     [Header("Consumable")] // 소비 시 효과들
     public ItemDataConsumable[] consumables;
+    public UnityEvent UseEffect;
     
-    [Header("Equipment")]
+    [Header("Equipment")] // 장비 아이템 프리팹
     public GameObject equipmentPrefab;
 }

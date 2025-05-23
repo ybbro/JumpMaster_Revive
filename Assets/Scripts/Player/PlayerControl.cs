@@ -1,9 +1,16 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerControl : MonoBehaviour
 {
     [SerializeField] float moveSpeed;
+    private float moveSpeedOrigin;
+    public float GetOriginSpeed
+    {
+        get => moveSpeedOrigin;
+    }
+    Coroutine ChangingMoveSpeed;
     [SerializeField] float jumpForce;
     [SerializeField] private LayerMask notPlayer;
     Transform camera;
@@ -16,8 +23,6 @@ public class PlayerControl : MonoBehaviour
     Vector3 moveVector;
 
     private Vector2 inputDir;
-
-    private float h, v;
     
     // 현재 회전의 기준이 되는 값 (CameraControl 에서 변경)
     public float currentDirection = 0f;
@@ -27,11 +32,7 @@ public class PlayerControl : MonoBehaviour
         TryGetComponent(out _rigidbody);
         TryGetComponent(out _animationControl);
         camera = Camera.main.transform;
-    }
-
-    private void Start()
-    {
-        Cursor.lockState = CursorLockMode.Locked;
+        moveSpeedOrigin = moveSpeed;
     }
 
     private void Update()
@@ -163,5 +164,32 @@ public class PlayerControl : MonoBehaviour
             // 착지 애니메이션 끄기(트리거로 하려고 했으나 게임 시작부터 활성화되는 문제가 발생.. 그냥 bool로 관리)
             _animationControl.Animator.SetBool(_animationControl.state[(int)AnimState.Land], false);
         }
+    }
+
+    // 인벤토리 키를 눌렀을 때 호출
+    public void OnInventory(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            GameManager.Instance.Inventory.ActiveChange();
+        }
+    }
+    
+    // 일정 시간 동안 이동속도 증가
+    public void Call_Change_MoveSpeed(float _moveSpeed, float _time)
+    {
+        if(ChangingMoveSpeed != null)
+            StopCoroutine(Change_MoveSpeed(_moveSpeed, _time));
+        StartCoroutine(Change_MoveSpeed(_moveSpeed, _time));
+    }
+    
+    IEnumerator Change_MoveSpeed(float _moveSpeed, float _time)
+    {
+        // 바꿀 속도로 변화
+        moveSpeed = _moveSpeed;
+        // 버프 시간 동안 유지
+        yield return new WaitForSeconds(_time);
+        // 원래 속도로 되돌아가기
+        moveSpeed = moveSpeedOrigin;
     }
 }

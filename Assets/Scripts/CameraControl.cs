@@ -51,6 +51,9 @@ public class CameraControl : MonoBehaviour
 
     void Start()
     {
+        // 마우스 커서가 사라지도록
+        Cursor.lockState = CursorLockMode.Locked;
+        
         // 카메라의 원점으로 할 유니티짱 자식 오브젝트
         initPos = camPos;
 
@@ -122,7 +125,8 @@ public class CameraControl : MonoBehaviour
 
     public void OnLook(InputAction.CallbackContext context)
     {
-        _mouseDelta = context.ReadValue<Vector2>();
+        if(Cursor.lockState == CursorLockMode.Locked)
+            _mouseDelta = context.ReadValue<Vector2>();
     }
 
     public void OnInit(InputAction.CallbackContext context)
@@ -134,6 +138,10 @@ public class CameraControl : MonoBehaviour
     // 플레이 도중 카메라 무브
     void CameraMove()
     {
+        // 인벤토리를 열었을 때는 시점이 이동하지 않도록
+        if(Cursor.lockState != CursorLockMode.Locked)
+            return;
+        
         // 유니티짱의 위치를 따라 이동하도록 위치 갱신
         transform.position = player.transform.position + positionDistance;
         

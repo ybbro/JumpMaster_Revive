@@ -10,17 +10,21 @@ public class Condition : MonoBehaviour
     
     void Start()
     {
+        // 초기 값으로 초기화
         current = init;
     }
     
     void Update()
     {
+        // 자연적으로 변화하는 값
         Change(passive * Time.deltaTime);
+        // HP바 표시 변화
         transform.localScale = Vector3.right * GetPercentage() + Vector3.up + Vector3.forward;
     }
 
     float GetPercentage()
     {
+        // HP 비율
         return current / max;
     }
     
