@@ -1,7 +1,6 @@
 using UnityEngine;
 using TMPro;
 using System;
-using System.Linq;
 using UnityEngine.InputSystem;
 
 public class Interaction : MonoBehaviour
